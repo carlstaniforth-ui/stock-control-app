@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Item - Stock Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .item-info {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .item-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .item-sku {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 15px;
+        }
+
+        .stock-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .stock-label {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .stock-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stock-value.low {
+            color: #f56565;
+        }
+
+        .stock-value.medium {
+            color: #ed8936;
+        }
+
+        .stock-value.high {
+            color: #48bb78;
+        }
+
+        .item-description {
+            font-size: 14px;
+            color: #4a5568;
+            margin-top: 10px;
+        }
+
+        .item-location {
+            display: inline-block;
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .deplete-section {
+            margin-top: 20px;
+        }
+
+        .quantity-input-wrapper {
+            margin-bottom: 25px;
+        }
+
+        .quantity-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .quantity-input-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .qty-input {
+            width: 100px;
+            height: 60px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            color: #2d3748;
+            transition: border-color 0.2s;
+        }
+
+        .qty-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .qty-input::-webkit-inner-spin-button,
+        .qty-input::-webkit-outer-spin-button {
+            opacity: 1;
+            height: 50px;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .qty-btn {
+            background: #edf2f7;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #4a5568;
+        }
+
+        .qty-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .qty-btn:active {
+            transform: scale(0.95);
+        }
+
+        .qty-display {
+            font-size: 28px;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+            color: #2d3748;
+        }
+
+        .deplete-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .deplete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+        }
+
+        .deplete-btn:active {
+            transform: translateY(0);
+        }
+
+        .deplete-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #fc8181;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #68d391;
+        }
+
+        .alert-info {
+            background: #bee3f8;
+            color: #2c5282;
+            border: 1px solid #63b3ed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #f7fafc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 Stock Control</h1>
+            <p>Scan & Deplete Inventory</p>
+        </div>
+        <div class="content" id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading item...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin + '/api';
+        let currentItem = null;
+        let quantity = 1;
+
+        // Get SKU from URL parameters
+        function getSKU() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('sku');
+        }
+
+        // Load item data
+        async function loadItem() {
+            const sku = getSKU();
+            
+            if (!sku) {
+                showError('No SKU provided in URL');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/items/${sku}`);
+                
+                if (!response.ok) {
+                    throw new Error('Item not found');
+                }
+
+                currentItem = await response.json();
+                displayItem();
+            } catch (error) {
+                showError('Failed to load item: ' + error.message);
+            }
+        }
+
+        // Display item information
+        function displayItem() {
+            const stockClass = getStockClass(currentItem.stockQuantity);
+            
+            document.getElementById('content').innerHTML = `
+                <div class="item-info">
+                    <div class="item-name">${escapeHtml(currentItem.name)}</div>
+                    <div class="item-sku">SKU: ${escapeHtml(currentItem.sku)}</div>
+                    
+                    <div class="stock-display">
+                        <span class="stock-label">Current Stock</span>
+                        <span class="stock-value ${stockClass}">${currentItem.stockQuantity}</span>
+                    </div>
+                    
+                    ${currentItem.description ? `<div class="item-description">${escapeHtml(currentItem.description)}</div>` : ''}
+                    ${currentItem.location ? `<div class="item-location">📍 ${escapeHtml(currentItem.location)}</div>` : ''}
+                </div>
+
+                <div id="alert-container"></div>
+
+                <div class="deplete-section">
+                    <div class="quantity-input-wrapper">
+                        <div class="quantity-label">How many are you taking?</div>
+                        <div class="quantity-input-container">
+                            <button class="qty-btn" onclick="decreaseQuantity()">−</button>
+                            <input 
+                                type="number" 
+                                class="qty-input" 
+                                id="qty-input" 
+                                value="1" 
+                                min="1" 
+                                max="${currentItem.stockQuantity}"
+                                oninput="updateQuantityFromInput()"
+                            >
+                            <button class="qty-btn" onclick="increaseQuantity()">+</button>
+                        </div>
+                    </div>
+
+                    <button class="deplete-btn" onclick="depleteStock()" id="deplete-btn">
+                        ✓ Confirm
+                    </button>
+
+                    <button class="btn-secondary" onclick="location.reload()">
+                        🔄 Refresh
+                    </button>
+                </div>
+            `;
+        }
+
+        // Get stock level class
+        function getStockClass(stock) {
+            if (stock === 0) return 'low';
+            if (stock <= 5) return 'low';
+            if (stock <= 20) return 'medium';
+            return 'high';
+        }
+
+        // Update quantity from input field
+        function updateQuantityFromInput() {
+            const input = document.getElementById('qty-input');
+            let value = parseInt(input.value) || 1;
+            
+            // Enforce min/max
+            if (value < 1) value = 1;
+            if (value > currentItem.stockQuantity) value = currentItem.stockQuantity;
+            
+            input.value = value;
+            quantity = value;
+        }
+
+        // Increase quantity
+        function increaseQuantity() {
+            const input = document.getElementById('qty-input');
+            if (quantity < currentItem.stockQuantity) {
+                quantity++;
+                input.value = quantity;
+            }
+        }
+
+        // Decrease quantity
+        function decreaseQuantity() {
+            const input = document.getElementById('qty-input');
+            if (quantity > 1) {
+                quantity--;
+                input.value = quantity;
+            }
+        }
+
+        // Deplete stock
+        async function depleteStock() {
+            if (!currentItem || currentItem.stockQuantity < quantity) {
+                showAlert('Insufficient stock!', 'error');
+                // Vibrate for error (if supported)
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                return;
+            }
+
+            const btn = document.getElementById('deplete-btn');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⏳ Processing...';
+
+            try {
+                const response = await fetch(`${API_BASE}/items/${currentItem.sku}/deplete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ quantity })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to deplete stock');
+                }
+
+                // Success haptic feedback
+                if (navigator.vibrate) navigator.vibrate(200);
+
+                // Show success with animation
+                btn.textContent = '✓ Success!';
+                btn.style.background = '#48bb78';
+                
+                const itemsText = quantity === 1 ? 'item' : 'items';
+                showAlert(`✓ Confirmed! ${quantity} ${itemsText} removed. New stock: ${data.item.currentStock}`, 'success');
+                
+                // Reload item to get updated stock
+                setTimeout(() => {
+                    quantity = 1;
+                    loadItem();
+                }, 2000);
+
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.textContent = originalText;
+                btn.style.background = '';
+                // Error haptic
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            }
+        }
+
+        // Show alert message
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alert-container');
+            container.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${escapeHtml(message)}
+                </div>
+            `;
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    container.innerHTML = '';
+                }, 3000);
+            }
+        }
+
+        // Show error
+        function showError(message) {
+            document.getElementById('content').innerHTML = `
+                <div class="alert alert-error">
+                    <strong>Error:</strong> ${escapeHtml(message)}
+                </div>
+                <button class="btn-secondary" onclick="location.reload()">
+                    🔄 Try Again
+                </button>
+            `;
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize
+        loadItem();
+    </script>
+</body>
+</html>

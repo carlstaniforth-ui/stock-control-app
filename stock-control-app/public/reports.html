@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Reports - Stock Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f7fafc;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-header {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-header:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card.clickable {
+            cursor: pointer;
+        }
+
+        .stat-card.clickable:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            border: 2px solid #667eea;
+        }
+
+        .stat-card.active {
+            border: 2px solid #667eea;
+            background: #f0f4ff;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .stat-hint {
+            font-size: 12px;
+            color: #a0aec0;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            color: #2d3748;
+            font-size: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .btn-secondary {
+            background: #718096;
+        }
+
+        .btn-success {
+            background: #48bb78;
+        }
+
+        .btn-danger {
+            background: #f56565;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f7fafc;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        tr.clickable {
+            cursor: pointer;
+        }
+
+        tr.clickable:hover {
+            background: #edf2f7;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-danger {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .badge-warning {
+            background: #feebc8;
+            color: #c05621;
+        }
+
+        .badge-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-info {
+            background: #bee3f8;
+            color: #2c5282;
+            border: 1px solid #90cdf4;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #fc8181;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #68d391;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .filter-panel {
+            background: #edf2f7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-panel h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .qty-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .location-row {
+            cursor: pointer;
+        }
+
+        .location-row:hover {
+            background: #edf2f7;
+        }
+
+        .location-items {
+            background: #f7fafc;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .quick-action-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            color: #2d3748;
+            transition: all 0.2s;
+        }
+
+        .quick-action-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .quick-action-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .export-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .export-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 1000;
+            margin-top: 5px;
+        }
+
+        .export-dropdown button {
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2d3748;
+        }
+
+        .export-dropdown button:hover {
+            background: #f7fafc;
+        }
+
+        .export-dropdown button:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .export-dropdown button:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>📊 Interactive Reports</h1>
+            <div class="header-buttons">
+                <a href="/admin.html" class="btn-header">📦 Dashboard</a>
+                <a href="/guide.html" class="btn-header">📖 Guide</a>
+                <button class="btn-header" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="login-required" class="hidden">
+            <div class="alert alert-info">
+                <strong>Authentication Required</strong><br>
+                Please <a href="/admin.html">login</a> to view reports.
+            </div>
+        </div>
+
+        <div id="report-content" class="hidden">
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="quick-action-btn" onclick="showAllItems()">
+                    📋 All Items
+                </div>
+                <div class="quick-action-btn" onclick="filterByLocation()">
+                    📍 By Location
+                </div>
+                <div class="quick-action-btn" onclick="showTopValue()">
+                    💎 Top Value
+                </div>
+                <div class="quick-action-btn" onclick="clearFilters()">
+                    🔄 Clear Filters
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-value">£0.00</div>
+                    <div class="stat-label">Total Inventory Value</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-items">0</div>
+                    <div class="stat-label">Total Items</div>
+                </div>
+                <div class="stat-card clickable" onclick="showLowStock()">
+                    <div class="stat-value" id="stat-low" style="color: #f59e0b;">0</div>
+                    <div class="stat-label">Low Stock Items (≤5)</div>
+                    <div class="stat-hint">👆 Click to view & reorder</div>
+                </div>
+                <div class="stat-card clickable" onclick="showOutOfStock()">
+                    <div class="stat-value" id="stat-zero" style="color: #ef4444;">0</div>
+                    <div class="stat-label">Out of Stock</div>
+                    <div class="stat-hint">👆 Click to view & reorder</div>
+                </div>
+            </div>
+
+            <!-- Filtered Items Section -->
+            <div id="filtered-section" class="section hidden">
+                <div class="section-header">
+                    <h2 id="filtered-title">Filtered Items</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-small btn-secondary" onclick="clearFilters()">Clear Filter</button>
+                        <div class="export-menu">
+                            <button class="btn btn-small btn-success" onclick="toggleExportMenu()">
+                                📥 Export ▼
+                            </button>
+                            <div id="export-menu" class="export-dropdown hidden">
+                                <button onclick="exportFiltered('reorder')">📋 Reorder List</button>
+                                <button onclick="exportFiltered('full')">📊 Full Report</button>
+                                <button onclick="exportFiltered('stockcount')">✓ Stock Count Sheet</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="reorder-worksheet" class="hidden">
+                    <div class="filter-panel">
+                        <h3>🛒 Reorder Worksheet</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin-bottom: 15px;">
+                            Select items to reorder and adjust quantities. Suggested quantities are based on current stock levels.
+                        </p>
+                        <div class="btn-group">
+                            <button class="btn btn-small" onclick="selectAllReorder()">Select All</button>
+                            <button class="btn btn-small btn-secondary" onclick="deselectAllReorder()">Deselect All</button>
+                            <button class="btn btn-small btn-success" onclick="exportReorderList()">📤 Export Selected</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="filtered-items-container"></div>
+            </div>
+
+            <!-- Location Breakdown -->
+            <div id="location-section" class="section">
+                <div class="section-header">
+                    <h2>📍 Value by Location</h2>
+                    <button class="btn btn-small" onclick="exportLocationBreakdown()">📥 Export</button>
+                </div>
+                <div id="location-container"></div>
+            </div>
+
+            <!-- Top Value Items -->
+            <div id="topvalue-section" class="section">
+                <div class="section-header">
+                    <h2>💎 Top Value Items</h2>
+                    <button class="btn btn-small" onclick="exportTopValue()">📥 Export</button>
+                </div>
+                <div id="topvalue-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let authToken = localStorage.getItem('authToken');
+        let reportData = null;
+        let allItems = [];
+        let currentFilter = null;
+
+        // Check authentication
+        if (!authToken) {
+            document.getElementById('login-required').classList.remove('hidden');
+        } else {
+            document.getElementById('report-content').classList.remove('hidden');
+            loadReports();
+        }
+
+        // Load reports
+        async function loadReports() {
+            try {
+                const response = await fetch(`${API_BASE}/reports/inventory`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        logout();
+                        return;
+                    }
+                    throw new Error('Failed to load reports');
+                }
+
+                reportData = await response.json();
+                await loadAllItems();
+                displayReports();
+            } catch (error) {
+                console.error('Full error:', error);
+                document.getElementById('report-content').innerHTML = `
+                    <div class="alert alert-error">
+                        <strong>Error loading reports:</strong> ${escapeHtml(error.message)}
+                        <br><br>
+                        <small>Check the browser console (F12) for more details. 
+                        Make sure you're logged in and the server is running.</small>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button class="btn" onclick="loadReports()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Load all items
+        async function loadAllItems() {
+            try {
+                const response = await fetch(`${API_BASE}/items`);
+                allItems = await response.json();
+            } catch (error) {
+                console.error('Error loading items:', error);
+            }
+        }
+
+        // Display reports
+        function displayReports() {
+            const { summary, locationBreakdown, topValueItems } = reportData;
+            
+            // Update stats
+            document.getElementById('stat-value').textContent = formatCurrency(summary.totalValue);
+            document.getElementById('stat-items').textContent = summary.totalItems;
+            document.getElementById('stat-low').textContent = summary.lowStockItems;
+            document.getElementById('stat-zero').textContent = summary.zeroStockItems;
+
+            // Display location breakdown
+            displayLocationBreakdown(locationBreakdown);
+
+            // Display top value items
+            displayTopValue(topValueItems);
+        }
+
+        // Display location breakdown
+        function displayLocationBreakdown(locations) {
+            const container = document.getElementById('location-container');
+            
+            if (locations.length === 0) {
+                container.innerHTML = '<div class="empty-state">No location data available</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Items</th>
+                            <th>Total Stock</th>
+                            <th>Total Value</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${locations.map(loc => `
+                            <tr class="location-row clickable" onclick="showLocationItems('${escapeHtml(loc.location)}')">
+                                <td><strong>${escapeHtml(loc.location)}</strong></td>
+                                <td>${loc.itemCount}</td>
+                                <td>${loc.totalStock}</td>
+                                <td>${formatCurrency(loc.totalValue)}</td>
+                                <td>
+                                    <button class="btn btn-small" onclick="event.stopPropagation(); showLocationItems('${escapeHtml(loc.location)}')">
+                                        View Items
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Display top value items
+        function displayTopValue(items) {
+            const container = document.getElementById('topvalue-container');
+            
+            if (items.length === 0) {
+                container.innerHTML = '<div class="empty-state">No value data available</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>SKU</th>
+                            <th>Stock</th>
+                            <th>Unit Cost</th>
+                            <th>Total Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${items.map(item => `
+                            <tr>
+                                <td><strong>${escapeHtml(item.name)}</strong></td>
+                                <td>${escapeHtml(item.sku)}</td>
+                                <td>${item.stockQuantity}</td>
+                                <td>${formatCurrency(item.unitCost)}</td>
+                                <td><strong>${formatCurrency(item.totalValue)}</strong></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Show low stock items
+        function showLowStock() {
+            const lowStockItems = allItems.filter(item => item.stockQuantity > 0 && item.stockQuantity <= 5);
+            showFilteredItems(lowStockItems, '🟡 Low Stock Items (1-5 units)', true);
+        }
+
+        // Show out of stock items
+        function showOutOfStock() {
+            const outOfStockItems = allItems.filter(item => item.stockQuantity === 0);
+            showFilteredItems(outOfStockItems, '🔴 Out of Stock Items', true);
+        }
+
+        // Show location items
+        function showLocationItems(location) {
+            const locationItems = allItems.filter(item => (item.location || 'Unassigned') === location);
+            showFilteredItems(locationItems, `📍 Items in ${location}`, false);
+        }
+
+        // Show all items
+        function showAllItems() {
+            showFilteredItems(allItems, '📋 All Inventory Items', false);
+        }
+
+        // Show top value
+        function showTopValue() {
+            const topItems = reportData.topValueItems.map(tv => 
+                allItems.find(item => item.sku === tv.sku)
+            ).filter(Boolean);
+            showFilteredItems(topItems, '💎 Top Value Items', false);
+        }
+
+        // Filter by location (shows location picker)
+        function filterByLocation() {
+            const locations = [...new Set(allItems.map(item => item.location || 'Unassigned'))];
+            const location = prompt('Enter location:\n\n' + locations.join('\n'));
+            if (location) {
+                showLocationItems(location);
+            }
+        }
+
+        // Show filtered items
+        function showFilteredItems(items, title, isReorderMode) {
+            currentFilter = { items, title, isReorderMode };
+            
+            const section = document.getElementById('filtered-section');
+            const titleEl = document.getElementById('filtered-title');
+            const container = document.getElementById('filtered-items-container');
+            const worksheet = document.getElementById('reorder-worksheet');
+            
+            section.classList.remove('hidden');
+            titleEl.textContent = title;
+            
+            if (isReorderMode) {
+                worksheet.classList.remove('hidden');
+            } else {
+                worksheet.classList.add('hidden');
+            }
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No items found matching this filter</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (isReorderMode) {
+                // Reorder worksheet mode with checkboxes and quantities
+                container.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th width="40">
+                                    <input type="checkbox" id="select-all-checkbox" onchange="toggleAllCheckboxes()">
+                                </th>
+                                <th>Item</th>
+                                <th>SKU</th>
+                                <th>Current Stock</th>
+                                <th>Reorder Qty</th>
+                                <th>Unit Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${items.map((item, index) => {
+                                const targetStock = 30; 
+				const suggestedQty = targetStock - item.stockQuantity;
+                                const stockBadge = item.stockQuantity === 0 
+                                    ? '<span class="badge badge-danger">OUT</span>'
+                                    : '<span class="badge badge-warning">LOW</span>';
+                                
+                                return `
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="reorder-checkbox" data-index="${index}" checked>
+                                        </td>
+                                        <td><strong>${escapeHtml(item.name)}</strong></td>
+                                        <td>${escapeHtml(item.sku)}</td>
+                                        <td>${stockBadge} ${item.stockQuantity}</td>
+                                        <td>
+                                            <div class="qty-input">
+                                                <input type="number" 
+                                                    id="qty-${index}" 
+                                                    value="${suggestedQty}" 
+                                                    min="1" 
+                                                    class="reorder-qty">
+                                                <span style="font-size: 12px; color: #718096;">units</span>
+                                            </div>
+                                        </td>
+                                        <td>${item.unitCost ? formatCurrency(item.unitCost) : 'N/A'}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                // Regular view mode
+                container.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>SKU</th>
+                                <th>Stock</th>
+                                <th>Location</th>
+                                <th>Unit Cost</th>
+                                <th>Total Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${items.map(item => {
+                                const totalValue = (item.stockQuantity || 0) * (item.unitCost || 0);
+                                let stockBadge = '';
+                                if (item.stockQuantity === 0) {
+                                    stockBadge = '<span class="badge badge-danger">OUT</span> ';
+                                } else if (item.stockQuantity <= 5) {
+                                    stockBadge = '<span class="badge badge-warning">LOW</span> ';
+                                }
+                                
+                                return `
+                                    <tr>
+                                        <td><strong>${escapeHtml(item.name)}</strong></td>
+                                        <td>${escapeHtml(item.sku)}</td>
+                                        <td>${stockBadge}${item.stockQuantity}</td>
+                                        <td>${escapeHtml(item.location || 'Unassigned')}</td>
+                                        <td>${item.unitCost ? formatCurrency(item.unitCost) : 'N/A'}</td>
+                                        <td>${formatCurrency(totalValue)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            // Scroll to filtered section
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Toggle all checkboxes
+        function toggleAllCheckboxes() {
+            const masterCheckbox = document.getElementById('select-all-checkbox');
+            const checkboxes = document.querySelectorAll('.reorder-checkbox');
+            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+        }
+
+        // Select all for reorder
+        function selectAllReorder() {
+            const checkboxes = document.querySelectorAll('.reorder-checkbox');
+            checkboxes.forEach(cb => cb.checked = true);
+            const masterCheckbox = document.getElementById('select-all-checkbox');
+            if (masterCheckbox) masterCheckbox.checked = true;
+        }
+
+        // Deselect all for reorder
+        function deselectAllReorder() {
+            const checkboxes = document.querySelectorAll('.reorder-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+            const masterCheckbox = document.getElementById('select-all-checkbox');
+            if (masterCheckbox) masterCheckbox.checked = false;
+        }
+
+        // Export reorder list
+        function exportReorderList() {
+            if (!currentFilter || !currentFilter.isReorderMode) return;
+
+            const selected = [];
+            const checkboxes = document.querySelectorAll('.reorder-checkbox:checked');
+            
+            checkboxes.forEach(cb => {
+                const index = parseInt(cb.dataset.index);
+                const item = currentFilter.items[index];
+                const qtyInput = document.getElementById(`qty-${index}`);
+                const quantity = parseInt(qtyInput.value) || 0;
+                
+                if (quantity > 0) {
+                    selected.push({
+                        sku: item.sku,
+                        name: item.name,
+                        currentStock: item.stockQuantity,
+                        reorderQty: quantity,
+                        unitCost: item.unitCost || 0,
+                        totalCost: quantity * (item.unitCost || 0)
+                    });
+                }
+            });
+
+            if (selected.length === 0) {
+                alert('No items selected for reorder');
+                return;
+            }
+
+            // Create CSV
+            const headers = ['SKU', 'Item Name', 'Current Stock', 'Reorder Quantity', 'Unit Cost', 'Total Cost'];
+            const rows = selected.map(item => [
+                item.sku,
+                item.name,
+                item.currentStock,
+                item.reorderQty,
+                item.unitCost.toFixed(2),
+                item.totalCost.toFixed(2)
+            ]);
+
+            downloadCSV('reorder-list', headers, rows);
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('filtered-section').classList.add('hidden');
+            currentFilter = null;
+        }
+
+        // Toggle export menu
+        function toggleExportMenu() {
+            const menu = document.getElementById('export-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Close export menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('export-menu');
+            const exportBtn = e.target.closest('.export-menu');
+            if (!exportBtn && menu) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // Export filtered items
+        function exportFiltered(format) {
+            toggleExportMenu();
+            
+            if (!currentFilter) return;
+
+            const items = currentFilter.items;
+            
+            if (format === 'reorder') {
+                // Reorder list format
+                const headers = ['SKU', 'Item Name', 'Current Stock', 'Suggested Reorder Qty', 'Unit Cost'];
+                const rows = items.map(item => {
+                    const targetStock = 30;
+		    const suggestedQty = targetStock - item.stockQuantity;
+                    return [
+                        item.sku,
+                        item.name,
+                        item.stockQuantity,
+                        suggestedQty,
+                        (item.unitCost || 0).toFixed(2)
+                    ];
+                });
+                downloadCSV('reorder-list', headers, rows);
+            } else if (format === 'full') {
+                // Full report
+                const headers = ['SKU', 'Item Name', 'Stock', 'Unit Cost', 'Total Value', 'Location', 'Description'];
+                const rows = items.map(item => [
+                    item.sku,
+                    item.name,
+                    item.stockQuantity,
+                    (item.unitCost || 0).toFixed(2),
+                    ((item.stockQuantity || 0) * (item.unitCost || 0)).toFixed(2),
+                    item.location || '',
+                    item.description || ''
+                ]);
+                downloadCSV('inventory-report', headers, rows);
+            } else if (format === 'stockcount') {
+                // Stock count sheet
+                const headers = ['SKU', 'Item Name', 'Expected Stock', 'Actual Stock (Count)', 'Difference', 'Location'];
+                const rows = items.map(item => [
+                    item.sku,
+                    item.name,
+                    item.stockQuantity,
+                    '', // To be filled in during counting
+                    '', // Calculated difference
+                    item.location || ''
+                ]);
+                downloadCSV('stock-count-sheet', headers, rows);
+            }
+        }
+
+        // Export location breakdown
+        function exportLocationBreakdown() {
+            const { locationBreakdown } = reportData;
+            const headers = ['Location', 'Item Count', 'Total Stock', 'Total Value'];
+            const rows = locationBreakdown.map(loc => [
+                loc.location,
+                loc.itemCount,
+                loc.totalStock,
+                loc.totalValue.toFixed(2)
+            ]);
+            downloadCSV('location-breakdown', headers, rows);
+        }
+
+        // Export top value
+        function exportTopValue() {
+            const { topValueItems } = reportData;
+            const headers = ['SKU', 'Item Name', 'Stock', 'Unit Cost', 'Total Value'];
+            const rows = topValueItems.map(item => [
+                item.sku,
+                item.name,
+                item.stockQuantity,
+                item.unitCost.toFixed(2),
+                item.totalValue.toFixed(2)
+            ]);
+            downloadCSV('top-value-items', headers, rows);
+        }
+
+        // Download CSV helper
+        function downloadCSV(filename, headers, rows) {
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => {
+                    const escaped = String(cell).replace(/"/g, '""');
+                    return escaped.includes(',') || escaped.includes('"') || escaped.includes('\n') 
+                        ? `"${escaped}"` 
+                        : escaped;
+                }).join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${filename}-${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // Format currency
+        function formatCurrency(value) {
+            if (value === null || value === undefined) return '£0.00';
+            return '£' + Number(value).toFixed(2);
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('username');
+            localStorage.removeItem('userRole');
+            window.location.href = '/admin.html';
+        }
+    </script>
+</body>
+</html>

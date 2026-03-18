@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide - Stock Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f7fafc;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-header {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-header:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .guide-nav {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .guide-nav h2 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .guide-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .guide-link {
+            padding: 12px 16px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            color: #2d3748;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: block;
+            text-align: center;
+        }
+
+        .guide-link:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #2d3748;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section h3 {
+            color: #4a5568;
+            font-size: 18px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .section h4 {
+            color: #718096;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .section p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .section ul, .section ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+            color: #4a5568;
+            line-height: 1.8;
+        }
+
+        .section li {
+            margin-bottom: 8px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature-card h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .feature-card p {
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        .info-box {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            color: #096dd9;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .warning-box {
+            background: #fff7e6;
+            border: 1px solid #ffd591;
+            color: #d46b08;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .success-box {
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #389e0d;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .step-list {
+            counter-reset: step-counter;
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #667eea;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .workflow-box {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .workflow-step {
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .workflow-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comparison-table tr:hover {
+            background: #f7fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+
+        .badge-admin {
+            background: #667eea;
+            color: white;
+        }
+
+        .badge-user {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>📖 User Guide</h1>
+            <div class="header-buttons">
+                <a href="/admin.html" class="btn-header">📦 Dashboard</a>
+                <a href="/reports.html" class="btn-header">📊 Reports</a>
+                <a href="/users.html" class="btn-header" id="users-link">👥 Users</a>
+                <button class="btn-header" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Quick Navigation -->
+        <div class="guide-nav">
+            <h2>📑 Quick Navigation</h2>
+            <div class="guide-links">
+                <a href="#getting-started" class="guide-link">🚀 Getting Started</a>
+                <a href="#dashboard" class="guide-link">📦 Dashboard</a>
+                <a href="#reports" class="guide-link">📊 Reports</a>
+                <a href="#scanning" class="guide-link">📱 QR Scanning</a>
+                <a href="#users" class="guide-link">👥 Users</a>
+                <a href="#workflows" class="guide-link">🔄 Workflows</a>
+            </div>
+        </div>
+
+        <!-- Getting Started -->
+        <div class="section" id="getting-started">
+            <h2>🚀 Getting Started</h2>
+            
+            <h3>Welcome to Stock Control!</h3>
+            <p>This system helps you manage inventory, track stock levels, generate QR codes, and create reorder lists automatically.</p>
+
+            <div class="info-box">
+                <strong>💡 First Time User?</strong><br>
+                If you're new to the system, start by exploring the Dashboard to see your inventory, then try scanning a QR code to deplete stock.
+            </div>
+
+            <h3>What You Can Do</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>📦 Manage Inventory</h4>
+                    <p>Add, edit, and delete items. Track stock quantities and costs.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📱 QR Code Scanning</h4>
+                    <p>Generate QR codes for items. Scan to instantly deplete stock.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📊 Interactive Reports</h4>
+                    <p>View insights, create reorder lists, and export data.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>👥 User Management</h4>
+                    <p>Admins can create users with different permission levels.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="section" id="dashboard">
+            <h2>📦 Dashboard Guide</h2>
+
+            <h3>Adding Items</h3>
+            <p>Admins can add new inventory items:</p>
+            <ol class="step-list">
+                <li>
+                    <strong>Fill in Item Details</strong><br>
+                    Enter SKU, Name, Initial Stock, Location, and Description.
+                </li>
+                <li>
+                    <strong>Add Cost Information (Optional)</strong><br>
+                    Enter Unit Cost and select Currency (GBP/USD/EUR).
+                </li>
+                <li>
+                    <strong>Click "Add Item"</strong><br>
+                    Item appears in your inventory list.
+                </li>
+            </ol>
+
+            <h3>Managing Items</h3>
+            <p>Each item card shows:</p>
+            <ul>
+                <li><strong>Name & SKU</strong> - Item identification</li>
+                <li><strong>Stock Level</strong> - Current quantity (color-coded)</li>
+                <li><strong>Cost</strong> - Unit cost if entered</li>
+                <li><strong>Location</strong> - Where item is stored</li>
+            </ul>
+
+            <h4>Available Actions:</h4>
+            <div class="workflow-box">
+                <div class="workflow-step">
+                    <strong>📱 View QR</strong> - Display and print QR code for scanning
+                </div>
+                <div class="workflow-step">
+                    <strong>➕ Replenish</strong> - <span class="badge badge-admin">Admin Only</span> Add stock when receiving deliveries
+                </div>
+                <div class="workflow-step">
+                    <strong>🗑️ Delete</strong> - <span class="badge badge-admin">Admin Only</span> Remove item from inventory
+                </div>
+            </div>
+
+            <h3>Bulk Import/Export</h3>
+            <p><span class="badge badge-admin">Admin Only</span></p>
+            
+            <h4>Export CSV:</h4>
+            <ul>
+                <li>Click "📥 Export CSV" button</li>
+                <li>Downloads current inventory as CSV file</li>
+                <li>Use for backups or analysis in Excel</li>
+            </ul>
+
+            <h4>Import CSV:</h4>
+            <ul>
+                <li>Click "📤 Import CSV" button</li>
+                <li>Select CSV file with format: SKU, Name, Stock Quantity, Unit Cost, Currency, Location, Description</li>
+                <li>Existing SKUs will be updated, new SKUs will be created</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>⚠️ Import Warning:</strong> The import process updates existing items. Always export a backup before importing new data.
+            </div>
+        </div>
+
+        <!-- Reports -->
+        <div class="section" id="reports">
+            <h2>📊 Interactive Reports</h2>
+
+            <h3>Overview Statistics</h3>
+            <p>The reports page shows four key metrics:</p>
+            <ul>
+                <li><strong>Total Inventory Value</strong> - Sum of all stock × unit costs</li>
+                <li><strong>Total Items</strong> - Number of different products</li>
+                <li><strong>Low Stock Items</strong> - Items with ≤5 units <em>(clickable!)</em></li>
+                <li><strong>Out of Stock</strong> - Items with 0 units <em>(clickable!)</em></li>
+            </ul>
+
+            <h3>Reorder Workflow (The Best Feature! 🎯)</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Click "Low Stock" or "Out of Stock" Card</strong><br>
+                    Shows filtered list of items needing reorder
+                </li>
+                <li>
+                    <strong>Review Suggested Quantities</strong><br>
+                    System automatically suggests reorder amounts based on stock level
+                </li>
+                <li>
+                    <strong>Adjust as Needed</strong><br>
+                    Edit quantities or uncheck items you don't want to order
+                </li>
+                <li>
+                    <strong>Click "📤 Export Selected"</strong><br>
+                    Downloads CSV with your reorder list
+                </li>
+                <li>
+                    <strong>Email to Supplier</strong><br>
+                    Send the CSV file - it's ready to use!
+                </li>
+            </ol>
+
+            <div class="success-box">
+                <strong>⚡ Time Savings:</strong> This process takes 30 seconds instead of 20-30 minutes of manual work!
+            </div>
+
+            <h3>Export Formats</h3>
+            <p>Three specialized formats available:</p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Format</th>
+                        <th>Best For</th>
+                        <th>Contains</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Reorder List</strong></td>
+                        <td>Supplier orders</td>
+                        <td>SKU, Name, Current Stock, Suggested Qty, Unit Cost, Total</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Full Report</strong></td>
+                        <td>Analysis & reports</td>
+                        <td>All item details including location, description, values</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stock Count Sheet</strong></td>
+                        <td>Physical counting</td>
+                        <td>SKU, Name, Expected Stock, blank Actual column to fill in</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Location & Value Analysis</h3>
+            <ul>
+                <li><strong>Click location rows</strong> - See all items in that location</li>
+                <li><strong>Top Value Items</strong> - See your most valuable inventory</li>
+                <li><strong>Quick Actions</strong> - Fast filters for common views</li>
+            </ul>
+        </div>
+
+        <!-- QR Scanning -->
+        <div class="section" id="scanning">
+            <h2>📱 QR Code Scanning</h2>
+
+            <h3>How QR Codes Work</h3>
+            <p>Each inventory item has a unique QR code that links to a mobile-friendly scan page.</p>
+
+            <h3>Generating QR Codes</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Click "📱 View QR" on Any Item</strong><br>
+                    QR code appears in a popup window
+                </li>
+                <li>
+                    <strong>Print the QR Code</strong><br>
+                    Use Ctrl+P or click Print button
+                </li>
+                <li>
+                    <strong>Attach to Physical Item</strong><br>
+                    Stick label on shelf, bin, or product packaging
+                </li>
+            </ol>
+
+            <h3>Scanning QR Codes</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Scan with Phone Camera</strong><br>
+                    Point camera at QR code (no app needed on most phones)
+                </li>
+                <li>
+                    <strong>Tap the Link</strong><br>
+                    Opens scan page showing item details
+                </li>
+                <li>
+                    <strong>Enter Quantity</strong><br>
+                    How many items are you taking?
+                </li>
+                <li>
+                    <strong>Click "✓ Confirm"</strong><br>
+                    Stock is depleted instantly with haptic feedback
+                </li>
+            </ol>
+
+            <div class="info-box">
+                <strong>📱 Mobile Friendly:</strong> The scan page is optimized for phones - large buttons, easy number input, and instant feedback.
+            </div>
+
+            <h3>Use Cases for QR Codes</h3>
+            <ul>
+                <li><strong>Warehouse Picking</strong> - Scan when taking items from stock</li>
+                <li><strong>Tool Checkout</strong> - Track who's using equipment</li>
+                <li><strong>Supply Room</strong> - Easy depletion for office supplies</li>
+                <li><strong>Retail Stock</strong> - Update inventory as items are sold</li>
+            </ul>
+        </div>
+
+        <!-- User Management -->
+        <div class="section" id="users">
+            <h2>👥 User Management</h2>
+            
+            <div class="info-box">
+                <strong>🔐 Admin Feature:</strong> Only administrators can access user management.
+            </div>
+
+            <h3>User Roles</h3>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Administrator</th>
+                        <th>General User</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>View Inventory</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>View Reports & Costs</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>Scan QR Codes</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>Export Data</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>Add/Edit/Delete Items</td>
+                        <td>✓</td>
+                        <td>✗</td>
+                    </tr>
+                    <tr>
+                        <td>Import CSV</td>
+                        <td>✓</td>
+                        <td>✗</td>
+                    </tr>
+                    <tr>
+                        <td>Create Users</td>
+                        <td>✓</td>
+                        <td>✗</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Creating New Users</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Navigate to User Management</strong><br>
+                    Click "👥 Users" button in header
+                </li>
+                <li>
+                    <strong>Fill in User Details</strong><br>
+                    Username, password (min 6 characters), and role
+                </li>
+                <li>
+                    <strong>Select Role</strong><br>
+                    Administrator (full access) or General User (view + scan only)
+                </li>
+                <li>
+                    <strong>Click "Create User"</strong><br>
+                    New user appears in the list
+                </li>
+                <li>
+                    <strong>Share Credentials</strong><br>
+                    Give username and password to the person
+                </li>
+            </ol>
+
+            <h3>First User is Admin</h3>
+            <p>The very first person to register becomes an administrator automatically. After that, only admins can create new users - public registration is disabled for security.</p>
+
+            <div class="warning-box">
+                <strong>⚠️ Cannot Delete Yourself:</strong> For safety, you cannot delete your own admin account. Create another admin first if you need to remove yourself.
+            </div>
+        </div>
+
+        <!-- Workflows -->
+        <div class="section" id="workflows">
+            <h2>🔄 Common Workflows</h2>
+
+            <h3>Weekly Reorder Process</h3>
+            <div class="workflow-box">
+                <div class="workflow-step">
+                    <strong>Monday Morning:</strong> Open Reports page
+                </div>
+                <div class="workflow-step">
+                    <strong>Click:</strong> "Low Stock: 12" card
+                </div>
+                <div class="workflow-step">
+                    <strong>Review:</strong> 12 items needing reorder
+                </div>
+                <div class="workflow-step">
+                    <strong>Adjust:</strong> Quantities if needed
+                </div>
+                <div class="workflow-step">
+                    <strong>Uncheck:</strong> Items for different suppliers
+                </div>
+                <div class="workflow-step">
+                    <strong>Export:</strong> Click "Export Selected"
+                </div>
+                <div class="workflow-step">
+                    <strong>Email:</strong> CSV to supplier
+                </div>
+                <div class="workflow-step">
+                    <strong>Done:</strong> 2 minutes total!
+                </div>
+            </div>
+
+            <h3>Receiving Stock Delivery</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Receive Delivery</strong><br>
+                    Physical items arrive at warehouse
+                </li>
+                <li>
+                    <strong>Open Dashboard</strong><br>
+                    Go to admin.html
+                </li>
+                <li>
+                    <strong>Find Item</strong><br>
+                    Locate item in inventory list
+                </li>
+                <li>
+                    <strong>Click "➕ Replenish"</strong><br>
+                    Admin only feature
+                </li>
+                <li>
+                    <strong>Enter Quantity</strong><br>
+                    How many units received
+                </li>
+                <li>
+                    <strong>Confirm</strong><br>
+                    Stock updated instantly
+                </li>
+            </ol>
+
+            <h3>Month-End Stocktake</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Export Stock Count Sheets</strong><br>
+                    Reports → Export → Stock Count Sheet (by location)
+                </li>
+                <li>
+                    <strong>Print Sheets</strong><br>
+                    One per location or section
+                </li>
+                <li>
+                    <strong>Physical Count</strong><br>
+                    Staff count actual items
+                </li>
+                <li>
+                    <strong>Compare</strong><br>
+                    Expected vs Actual stock
+                </li>
+                <li>
+                    <strong>Update System</strong><br>
+                    Adjust quantities for discrepancies
+                </li>
+                <li>
+                    <strong>Investigate</strong><br>
+                    Look into large differences (shrinkage/errors)
+                </li>
+            </ol>
+
+            <h3>Daily Operations</h3>
+            <div class="workflow-box">
+                <div class="workflow-step">
+                    <strong>Staff Arrive:</strong> Login to scan page
+                </div>
+                <div class="workflow-step">
+                    <strong>Take Items:</strong> Scan QR code
+                </div>
+                <div class="workflow-step">
+                    <strong>Enter Quantity:</strong> How many taking
+                </div>
+                <div class="workflow-step">
+                    <strong>Confirm:</strong> Stock depletes automatically
+                </div>
+                <div class="workflow-step">
+                    <strong>Manager Checks:</strong> Reports for low stock alerts
+                </div>
+                <div class="workflow-step">
+                    <strong>Weekly:</strong> Review and reorder
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips & Tricks -->
+        <div class="section">
+            <h2>💡 Tips & Tricks</h2>
+
+            <h3>Best Practices</h3>
+            <ul>
+                <li><strong>Use Clear SKUs</strong> - Format like "WIDGET-001" or "TOOL-HAMMER-01"</li>
+                <li><strong>Add Locations</strong> - Makes finding items easier (e.g., "Warehouse A, Shelf 3")</li>
+                <li><strong>Enter Costs</strong> - Enables value reporting and better insights</li>
+                <li><strong>Print QR Codes Clearly</strong> - Laminate for durability in warehouses</li>
+                <li><strong>Regular Backups</strong> - Export CSV weekly as backup</li>
+                <li><strong>Stock Checks</strong> - Monthly physical counts recommended</li>
+            </ul>
+
+            <h3>Keyboard Shortcuts</h3>
+            <ul>
+                <li><strong>Ctrl+P</strong> - Print QR code (when viewing QR)</li>
+                <li><strong>Ctrl+F5</strong> - Refresh and clear cache</li>
+                <li><strong>Tab</strong> - Navigate between form fields quickly</li>
+            </ul>
+
+            <h3>Mobile Tips</h3>
+            <ul>
+                <li><strong>Bookmark Scan Page</strong> - Quick access on warehouse phones</li>
+                <li><strong>Use Native Camera</strong> - No QR scanner app needed (iOS/Android)</li>
+                <li><strong>Large Touch Targets</strong> - Scan page optimized for gloves</li>
+            </ul>
+
+            <h3>Reporting Tips</h3>
+            <ul>
+                <li><strong>Click Don't Scroll</strong> - Use clickable cards to filter quickly</li>
+                <li><strong>Export Templates</strong> - Use Stock Count Sheet for physical audits</li>
+                <li><strong>Location Views</strong> - Click locations to see specific warehouse/room</li>
+                <li><strong>Reorder Worksheet</strong> - Pre-checked items, just adjust and export!</li>
+            </ul>
+        </div>
+
+        <!-- Getting Help -->
+        <div class="section">
+            <h2>🆘 Getting Help</h2>
+
+            <h3>Common Questions</h3>
+            
+            <h4>Q: I forgot my password, how do I reset it?</h4>
+            <p>Contact an administrator to create a new password or create a new account for you.</p>
+
+            <h4>Q: Can I edit an existing item?</h4>
+            <p>Currently, use CSV export → edit in Excel → import to update items. UI edit button coming soon!</p>
+
+            <h4>Q: Why can't I see the "Add Item" form?</h4>
+            <p>You need administrator privileges. Contact your admin for access.</p>
+
+            <h4>Q: The QR code won't scan</h4>
+            <p>Ensure good lighting, camera is in focus, and QR code is printed clearly. Most phones scan automatically with the native camera app.</p>
+
+            <h4>Q: How do I delete multiple items at once?</h4>
+            <p>Export CSV, remove rows for items to delete, then import. Or delete individually from dashboard.</p>
+
+            <h4>Q: Can I use this offline?</h4>
+            <p>No, the system requires internet connection to sync data between devices.</p>
+
+            <div class="success-box">
+                <strong>📧 Support:</strong> For technical issues, contact your system administrator or IT support team.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        const authToken = localStorage.getItem('authToken');
+        const userRole = localStorage.getItem('userRole');
+
+        // Show/hide users link based on role
+        if (userRole !== 'admin') {
+            const usersLink = document.getElementById('users-link');
+            if (usersLink) {
+                usersLink.style.display = 'none';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('username');
+            localStorage.removeItem('userRole');
+            window.location.href = '/admin.html';
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
