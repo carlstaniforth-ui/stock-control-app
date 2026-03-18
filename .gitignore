@@ -1,48 +1,27 @@
-# Dependencies
+# Node.js dependencies
 node_modules/
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 package-lock.json
 
-# Environment variables
+# Environment variables (contains JWT_SECRET)
 .env
 .env.local
 .env.*.local
 
-# Data files (contains sensitive user/inventory data)
+# Data folder (contains user passwords and inventory data)
 data/
-*.json
-
-# But allow package.json
-!package.json
-!package-lock.json
 
 # Logs
 logs/
 *.log
 
-# OS files
+# Operating System files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
 Thumbs.db
-ehthumbs.db
 Desktop.ini
 
-# IDE
+# IDE files
 .vscode/
 .idea/
 *.swp
-*.swo
 *~
-
-# Build files
-dist/
-build/
-
-# Temporary files
-tmp/
-temp/
