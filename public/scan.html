@@ -315,6 +315,9 @@
         let currentItem = null;
         let quantity = 1;
 
+        // Simple PIN check (before depletion)
+        const SCAN_PIN = '1234'; // Change this!
+
         // Get SKU from URL parameters
         function getSKU() {
             const params = new URLSearchParams(window.location.search);
@@ -434,6 +437,13 @@
 
         // Deplete stock
         async function depleteStock() {
+            // Prompt for PIN
+            const enteredPin = prompt('Enter PIN to deplete stock:');
+            if (enteredPin !== SCAN_PIN) {
+                alert('❌ Incorrect PIN');
+                return;
+            }
+
             if (!currentItem || currentItem.stockQuantity < quantity) {
                 showAlert('Insufficient stock!', 'error');
                 // Vibrate for error (if supported)
