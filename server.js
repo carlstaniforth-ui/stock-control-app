@@ -6,6 +6,7 @@ const QRCode = require('qrcode');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -14,6 +15,17 @@ const DATA_FILE = path.join(__dirname, 'data', 'inventory.json');
 const USERS_FILE = path.join(__dirname, 'data', 'users.json');
 
 // Middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],  // inline scripts used in HTML pages
+      styleSrc: ["'self'", "'unsafe-inline'"],   // inline styles used in HTML pages
+      imgSrc: ["'self'", "data:"],               // data: needed for QR code images
+      connectSrc: ["'self'"]
+    }
+  }
+}));
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
