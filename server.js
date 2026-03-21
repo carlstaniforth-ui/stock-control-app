@@ -103,6 +103,20 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+// Password policy validation
+function validatePassword(password) {
+  if (password.length < 10) {
+    return 'Password must be at least 10 characters';
+  }
+  if (!/[A-Z]/.test(password)) {
+    return 'Password must contain at least one uppercase letter';
+  }
+  if (!/[0-9]/.test(password)) {
+    return 'Password must contain at least one number';
+  }
+  return null;
+}
+
 // Rate limiter for login endpoint
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -128,8 +142,9 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(400).json({ error: 'Username and password required' });
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      return res.status(400).json({ error: passwordError });
     }
 
     const usersData = await readUsers();
@@ -258,8 +273,9 @@ app.post('/api/users', authenticateToken, requireAdmin, async (req, res) => {
       return res.status(400).json({ error: 'Username and password required' });
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      return res.status(400).json({ error: passwordError });
     }
 
     if (role && role !== 'admin' && role !== 'user') {
