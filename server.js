@@ -109,17 +109,10 @@ app.post('/api/auth/register', async (req, res) => {
     }
 
     const usersData = await readUsers();
-    
-    // Check if any users exist
+
+    // Check if any users exist - first user becomes admin, all others become general users
     const isFirstUser = usersData.users.length === 0;
-    
-    // If not first user, registration is disabled (admins must create users)
-    if (!isFirstUser) {
-      return res.status(403).json({ 
-        error: 'Public registration is disabled. Contact an administrator for access.' 
-      });
-    }
-    
+
     // Check if user already exists
     if (usersData.users.find(u => u.username === username)) {
       return res.status(400).json({ error: 'Username already exists' });

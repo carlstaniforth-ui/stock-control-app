@@ -646,9 +646,9 @@
                     return;
                 }
 
-                const message = data.isFirstUser 
+                const message = data.isFirstUser
                     ? 'Admin account created successfully! You are the first user. Please login.'
-                    : 'Registration successful! Please login.';
+                    : 'Account created successfully! Please login. Note: your account has general user access.';
                 showLoginAlert(message, 'success');
                 setTimeout(() => switchTab('login'), 1500);
             } catch (error) {
