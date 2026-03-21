@@ -519,6 +519,22 @@
         </div>
     </div>
 
+    <!-- Replenish Modal -->
+    <div id="replenish-modal" class="modal">
+        <div class="modal-content">
+            <h3>➕ Replenish Stock</h3>
+            <p id="replenish-item-name" style="color: #718096; margin-bottom: 20px;"></p>
+            <div class="form-group">
+                <label for="replenish-quantity">Quantity to Add</label>
+                <input type="number" id="replenish-quantity" min="1" placeholder="Enter quantity" onkeydown="if(event.key==='Enter')confirmReplenish()">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn btn-small" onclick="confirmReplenish()">Add Stock</button>
+                <button class="btn btn-secondary btn-small" onclick="closeReplenishModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- QR Code Modal -->
     <div id="qr-modal" class="modal">
         <div class="modal-content">
@@ -725,15 +741,15 @@
                 if (isAdmin()) {
                     actionsHtml = `
                         <div class="item-actions">
-                            <button class="btn btn-small" onclick="showQRCode('${item.sku}')">📱 View QR</button>
-                            <button class="btn btn-small btn-secondary" onclick="replenishStock('${item.sku}')">➕ Replenish</button>
-                            <button class="btn btn-small btn-danger" onclick="deleteItem('${item.sku}')">🗑️ Delete</button>
+                            <button class="btn btn-small qr-btn" data-sku="${escapeAttr(item.sku)}">📱 View QR</button>
+                            <button class="btn btn-small btn-secondary replenish-btn" data-sku="${escapeAttr(item.sku)}">➕ Replenish</button>
+                            <button class="btn btn-small btn-danger delete-btn" data-sku="${escapeAttr(item.sku)}">🗑️ Delete</button>
                         </div>
                     `;
                 } else {
                     actionsHtml = `
                         <div class="item-actions">
-                            <button class="btn btn-small" onclick="showQRCode('${item.sku}')">📱 View QR</button>
+                            <button class="btn btn-small qr-btn" data-sku="${escapeAttr(item.sku)}">📱 View QR</button>
                         </div>
                     `;
                 }
@@ -744,7 +760,7 @@
                             <h3>${escapeHtml(item.name)}</h3>
                             <div class="item-sku">SKU: ${escapeHtml(item.sku)}</div>
                             <div class="item-stock ${stockClass}">Stock: ${item.stockQuantity}</div>
-                            ${item.unitCost ? `<p style="font-size: 14px; color: #48bb78; font-weight: 600;">Cost: £${item.unitCost.toFixed(2)}</p>` : ''}
+                            ${item.unitCost ? `<p style="font-size: 14px; color: #48bb78; font-weight: 600;">Cost: ${getCurrencySymbol(item.currency)}${item.unitCost.toFixed(2)}</p>` : ''}
                             ${item.description ? `<p style="font-size: 14px; color: #4a5568;">${escapeHtml(item.description)}</p>` : ''}
                             ${item.location ? `<p style="font-size: 13px; color: #718096;">📍 ${escapeHtml(item.location)}</p>` : ''}
                         </div>
@@ -756,7 +772,6 @@
 
         // Get stock class
         function getStockClass(stock) {
-            if (stock === 0) return 'low';
             if (stock <= 5) return 'low';
             if (stock <= 20) return 'medium';
             return 'high';
@@ -842,10 +857,30 @@
             window.print();
         }
 
-        // Replenish stock
-        async function replenishStock(sku) {
-            const quantity = prompt('Enter quantity to add:');
-            if (!quantity || isNaN(quantity) || quantity <= 0) return;
+        // Replenish stock - show modal
+        let replenishSku = null;
+
+        function replenishStock(sku) {
+            const item = items.find(i => i.sku === sku);
+            if (!item) return;
+            replenishSku = sku;
+            document.getElementById('replenish-item-name').textContent = item.name;
+            document.getElementById('replenish-quantity').value = '';
+            document.getElementById('replenish-modal').classList.add('active');
+            document.getElementById('replenish-quantity').focus();
+        }
+
+        function closeReplenishModal() {
+            document.getElementById('replenish-modal').classList.remove('active');
+            replenishSku = null;
+        }
+
+        async function confirmReplenish() {
+            const quantity = parseInt(document.getElementById('replenish-quantity').value);
+            if (!quantity || quantity <= 0) return;
+
+            const sku = replenishSku;
+            closeReplenishModal();
 
             try {
                 const response = await fetch(`${API_BASE}/items/${sku}/replenish`, {
@@ -854,7 +889,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${authToken}`
                     },
-                    body: JSON.stringify({ quantity: parseInt(quantity) })
+                    body: JSON.stringify({ quantity })
                 });
 
                 if (!response.ok) {
@@ -894,6 +929,17 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        // Escape for HTML attributes
+        function escapeAttr(text) {
+            return String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // Get currency symbol
+        function getCurrencySymbol(currency) {
+            const symbols = { GBP: '£', USD: '$', EUR: '€' };
+            return symbols[currency] || currency;
         }
 
         // Export items to CSV
@@ -1096,6 +1142,16 @@
 
             reader.readAsText(file);
         }
+
+        // Event delegation for item action buttons
+        document.getElementById('items-container').addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-sku]');
+            if (!btn) return;
+            const sku = btn.dataset.sku;
+            if (btn.classList.contains('qr-btn')) showQRCode(sku);
+            else if (btn.classList.contains('replenish-btn')) replenishStock(sku);
+            else if (btn.classList.contains('delete-btn')) deleteItem(sku);
+        });
 
         // Auto-refresh items every 30 seconds
         setInterval(loadItems, 30000);

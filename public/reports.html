@@ -602,7 +602,7 @@
         // Display location breakdown
         function displayLocationBreakdown(locations) {
             const container = document.getElementById('location-container');
-            
+
             if (locations.length === 0) {
                 container.innerHTML = '<div class="empty-state">No location data available</div>';
                 return;
@@ -621,13 +621,13 @@
                     </thead>
                     <tbody>
                         ${locations.map(loc => `
-                            <tr class="location-row clickable" onclick="showLocationItems('${escapeHtml(loc.location)}')">
+                            <tr class="location-row clickable" data-location="${escapeAttr(loc.location)}">
                                 <td><strong>${escapeHtml(loc.location)}</strong></td>
-                                <td>${loc.itemCount}</td>
-                                <td>${loc.totalStock}</td>
-                                <td>${formatCurrency(loc.totalValue)}</td>
+                                <td>${loc.items}</td>
+                                <td>${loc.stock}</td>
+                                <td>${formatCurrency(loc.value)}</td>
                                 <td>
-                                    <button class="btn btn-small" onclick="event.stopPropagation(); showLocationItems('${escapeHtml(loc.location)}')">
+                                    <button class="btn btn-small view-location-btn" data-location="${escapeAttr(loc.location)}">
                                         View Items
                                     </button>
                                 </td>
@@ -636,6 +636,18 @@
                     </tbody>
                 </table>
             `;
+
+            container.querySelectorAll('.location-row').forEach(row => {
+                row.addEventListener('click', (e) => {
+                    if (!e.target.closest('button')) showLocationItems(row.dataset.location);
+                });
+            });
+            container.querySelectorAll('.view-location-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showLocationItems(btn.dataset.location);
+                });
+            });
         }
 
         // Display top value items
@@ -663,7 +675,7 @@
                             <tr>
                                 <td><strong>${escapeHtml(item.name)}</strong></td>
                                 <td>${escapeHtml(item.sku)}</td>
-                                <td>${item.stockQuantity}</td>
+                                <td>${item.stock}</td>
                                 <td>${formatCurrency(item.unitCost)}</td>
                                 <td><strong>${formatCurrency(item.totalValue)}</strong></td>
                             </tr>
@@ -704,13 +716,44 @@
             showFilteredItems(topItems, '💎 Top Value Items', false);
         }
 
-        // Filter by location (shows location picker)
+        // Filter by location (shows location picker modal)
         function filterByLocation() {
-            const locations = [...new Set(allItems.map(item => item.location || 'Unassigned'))];
-            const location = prompt('Enter location:\n\n' + locations.join('\n'));
-            if (location) {
-                showLocationItems(location);
-            }
+            const locations = [...new Set(allItems.map(item => item.location || 'Unassigned'))].sort();
+
+            const existing = document.getElementById('location-picker');
+            if (existing) existing.remove();
+
+            const overlay = document.createElement('div');
+            overlay.id = 'location-picker';
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;';
+
+            const panel = document.createElement('div');
+            panel.style.cssText = 'background:white;border-radius:12px;padding:30px;max-width:400px;width:90%;max-height:80vh;overflow-y:auto;';
+
+            const title = document.createElement('h3');
+            title.style.cssText = 'margin-bottom:20px;color:#2d3748;font-size:18px;';
+            title.textContent = '📍 Select Location';
+            panel.appendChild(title);
+
+            locations.forEach(loc => {
+                const btn = document.createElement('button');
+                btn.style.cssText = 'display:block;width:100%;text-align:left;padding:12px 16px;margin-bottom:8px;border:1px solid #e2e8f0;border-radius:8px;background:white;cursor:pointer;font-size:14px;color:#2d3748;';
+                btn.textContent = loc;
+                btn.addEventListener('mouseover', () => btn.style.background = '#f0f4ff');
+                btn.addEventListener('mouseout', () => btn.style.background = 'white');
+                btn.addEventListener('click', () => { overlay.remove(); showLocationItems(loc); });
+                panel.appendChild(btn);
+            });
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.style.cssText = 'display:block;width:100%;padding:12px;margin-top:10px;border:none;background:#718096;color:white;border-radius:8px;cursor:pointer;font-size:14px;';
+            cancelBtn.textContent = 'Cancel';
+            cancelBtn.addEventListener('click', () => overlay.remove());
+            panel.appendChild(cancelBtn);
+
+            overlay.appendChild(panel);
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+            document.body.appendChild(overlay);
         }
 
         // Show filtered items
@@ -979,9 +1022,9 @@
             const headers = ['Location', 'Item Count', 'Total Stock', 'Total Value'];
             const rows = locationBreakdown.map(loc => [
                 loc.location,
-                loc.itemCount,
-                loc.totalStock,
-                loc.totalValue.toFixed(2)
+                loc.items,
+                loc.stock,
+                loc.value.toFixed(2)
             ]);
             downloadCSV('location-breakdown', headers, rows);
         }
@@ -1030,6 +1073,11 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        // Escape for HTML attributes
+        function escapeAttr(text) {
+            return String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
         // Logout

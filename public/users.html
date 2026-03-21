@@ -388,9 +388,9 @@
                                     <td>${createdDate}</td>
                                     <td>${escapeHtml(user.createdBy || 'N/A')}</td>
                                     <td>
-                                        ${isCurrentUser ? 
-                                            '<span style="color: #718096; font-size: 13px;">Cannot delete yourself</span>' : 
-                                            `<button class="btn btn-small btn-danger" onclick="deleteUser(${user.id}, '${escapeHtml(user.username)}')">Delete</button>`
+                                        ${isCurrentUser ?
+                                            '<span style="color: #718096; font-size: 13px;">Cannot delete yourself</span>' :
+                                            `<button class="btn btn-small btn-danger delete-user-btn" data-user-id="${user.id}">Delete</button>`
                                         }
                                     </td>
                                 </tr>
@@ -433,8 +433,17 @@
             }
         }
 
+        // Event delegation for delete buttons
+        document.getElementById('users-container').addEventListener('click', (e) => {
+            const btn = e.target.closest('.delete-user-btn');
+            if (!btn) return;
+            deleteUser(parseInt(btn.dataset.userId));
+        });
+
         // Delete user
-        async function deleteUser(userId, username) {
+        async function deleteUser(userId) {
+            const user = users.find(u => u.id === userId);
+            const username = user ? user.username : `User #${userId}`;
             if (!confirm(`Are you sure you want to delete user "${username}"?`)) {
                 return;
             }
