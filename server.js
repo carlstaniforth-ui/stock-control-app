@@ -10,7 +10,11 @@ const helmet = require('helmet');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET environment variable is not set. Refusing to start.');
+  process.exit(1);
+}
 const DATA_FILE = path.join(__dirname, 'data', 'inventory.json');
 const USERS_FILE = path.join(__dirname, 'data', 'users.json');
 
