@@ -730,6 +730,7 @@
                     <button class="btn" onclick="exportToCSV()">📥 Export CSV</button>
                     <button class="btn admin-only hidden" onclick="document.getElementById('csv-upload').click()">📤 Import CSV</button>
                     <input type="file" id="csv-upload" accept=".csv" class="hidden" onchange="handleCSVImport(event)">
+                    <button class="btn admin-only hidden" onclick="printAllQRCodes()" id="print-all-btn">🖨️ Print All QR</button>
                 </div>
                 <div class="search-box">
                     <input type="text" id="search-input" placeholder="Search inventory..." oninput="filterItems(this.value)">
@@ -1443,6 +1444,94 @@
             else if (btn.classList.contains('replenish-btn')) replenishStock(sku);
             else if (btn.classList.contains('delete-btn')) deleteItem(sku);
         });
+
+        // ── Print all QR codes ──
+        async function printAllQRCodes() {
+            if (items.length === 0) {
+                alert('No items to print.');
+                return;
+            }
+
+            const btn = document.getElementById('print-all-btn');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⏳ Loading...';
+
+            try {
+                // Fetch all QR codes in parallel
+                const results = await Promise.all(
+                    items.map(item =>
+                        fetch(`${API_BASE}/items/${encodeURIComponent(item.sku)}/qrcode`)
+                            .then(r => r.json())
+                            .catch(() => null)
+                    )
+                );
+
+                const qrItems = results.filter(Boolean);
+
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>QR Codes - Stock Control</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: white; color: #111; }
+        h1 { font-size: 18px; padding: 16px 20px; border-bottom: 2px solid #111; margin-bottom: 20px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            padding: 0 20px 20px;
+        }
+        .qr-card {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: center;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        .qr-card img { width: 140px; height: 140px; display: block; margin: 0 auto 8px; }
+        .qr-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; word-break: break-word; }
+        .qr-sku  { font-size: 11px; color: #555; word-break: break-all; }
+        .qr-loc  { font-size: 11px; color: #777; margin-top: 3px; }
+        @media print {
+            h1 { border-bottom: 2px solid #000; }
+            .qr-card { border: 1px solid #000; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <h1>📦 Stock Control — QR Codes
+        <span style="float:right">
+            <button class="no-print" onclick="window.print()" style="padding:6px 14px;cursor:pointer;font-size:13px;">🖨️ Print</button>
+            <button class="no-print" onclick="window.close()" style="padding:6px 14px;cursor:pointer;font-size:13px;margin-left:6px;">Close</button>
+        </span>
+    </h1>
+    <div class="grid">
+        ${qrItems.map(q => {
+            const item = items.find(i => i.sku === q.sku) || {};
+            return `
+            <div class="qr-card">
+                <img src="${q.qrCodeDataUrl}" alt="QR ${escapeHtml(q.sku)}">
+                <div class="qr-name">${escapeHtml(q.name)}</div>
+                <div class="qr-sku">${escapeHtml(q.sku)}</div>
+                ${item.location ? `<div class="qr-loc">📍 ${escapeHtml(item.location)}</div>` : ''}
+            </div>`;
+        }).join('')}
+    </div>
+</body>
+</html>`);
+                printWindow.document.close();
+            } catch (error) {
+                alert('Failed to load QR codes: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
 
         // ── Auto-refresh every 30 seconds ──
         setInterval(loadItems, 30000);
