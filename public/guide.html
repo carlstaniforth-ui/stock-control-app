@@ -5,23 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Guide - Stock Control</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3a3a3a;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ffa94d;
+            --text-primary: #e8e8e8;
+            --text-secondary: #b0b0b0;
+            --border-color: #4a4a4a;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f7fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             min-height: 100vh;
+            color: var(--text-primary);
         }
 
+        /* ── Header ── */
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            border-bottom: 2px solid var(--accent-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
         }
 
         .header-content {
@@ -30,187 +56,222 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 24px 32px;
         }
 
-        .header h1 {
-            font-size: 24px;
+        .header-left { display: flex; align-items: center; gap: 16px; }
+
+        .logo {
+            width: 44px; height: 44px;
+            background: var(--accent-primary);
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 18px; color: var(--bg-primary);
         }
 
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
+        .header h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
 
-        .btn-header {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
+        .header-nav { display: flex; gap: 8px; }
+
+        .nav-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 9px 18px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
             text-decoration: none;
             display: inline-block;
+            font-family: inherit;
         }
 
-        .btn-header:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .nav-btn:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
         }
 
+        /* ── Container ── */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 30px 20px;
+            padding: 32px;
         }
 
+        /* ── Guide Nav ── */
         .guide-nav {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 22px 24px;
+            margin-bottom: 24px;
+            clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
         }
 
         .guide-nav h2 {
-            color: #2d3748;
-            margin-bottom: 15px;
-            font-size: 18px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 14px;
         }
 
         .guide-links {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 10px;
         }
 
         .guide-link {
-            padding: 12px 16px;
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            color: #2d3748;
+            padding: 11px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
             text-decoration: none;
             font-weight: 600;
+            font-size: 13px;
             transition: all 0.2s;
             display: block;
             text-align: center;
+            clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
         }
 
         .guide-link:hover {
-            border-color: #667eea;
-            background: #f0f4ff;
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: rgba(255, 107, 53, 0.05);
         }
 
+        /* ── Sections ── */
         .section {
-            background: white;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+            margin-bottom: 24px;
+            clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
         }
 
         .section h2 {
-            color: #2d3748;
-            font-size: 24px;
+            color: var(--text-primary);
+            font-size: 22px;
+            font-weight: 700;
             margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent-primary);
         }
 
         .section h3 {
-            color: #4a5568;
-            font-size: 18px;
-            margin-top: 25px;
-            margin-bottom: 15px;
+            color: var(--text-primary);
+            font-size: 17px;
+            font-weight: 700;
+            margin-top: 28px;
+            margin-bottom: 12px;
         }
 
         .section h4 {
-            color: #718096;
-            font-size: 16px;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            color: var(--accent-secondary);
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .section p {
-            color: #4a5568;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 14px;
+            font-size: 14px;
         }
 
         .section ul, .section ol {
-            margin-left: 25px;
-            margin-bottom: 15px;
-            color: #4a5568;
-            line-height: 1.8;
+            margin-left: 22px;
+            margin-bottom: 14px;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            font-size: 14px;
         }
 
-        .section li {
-            margin-bottom: 8px;
-        }
+        .section li { margin-bottom: 6px; }
+        .section li strong { color: var(--text-primary); }
 
+        /* ── Feature Grid ── */
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
             margin: 20px 0;
         }
 
         .feature-card {
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-primary);
+            padding: 18px;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
         }
 
         .feature-card h4 {
-            color: #2d3748;
-            margin-bottom: 10px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
             margin-top: 0;
-        }
-
-        .feature-card p {
-            margin-bottom: 0;
             font-size: 14px;
+            text-transform: none;
+            letter-spacing: 0;
         }
 
+        .feature-card p { margin-bottom: 0; font-size: 13px; }
+
+        /* ── Info/Warning/Success boxes ── */
         .info-box {
-            background: #e6f7ff;
-            border: 1px solid #91d5ff;
-            color: #096dd9;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+            background: rgba(90, 125, 154, 0.12);
+            border-left: 3px solid #5a7d9a;
+            color: #90caf9;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
         }
 
         .warning-box {
-            background: #fff7e6;
-            border: 1px solid #ffd591;
-            color: #d46b08;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+            background: rgba(255, 152, 0, 0.1);
+            border-left: 3px solid var(--warning);
+            color: #ffb74d;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
         }
 
         .success-box {
-            background: #f6ffed;
-            border: 1px solid #b7eb8f;
-            color: #389e0d;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 3px solid var(--success);
+            color: #69db7c;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
         }
 
         .code-box {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 15px 20px;
-            border-radius: 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-primary);
+            color: var(--accent-secondary);
+            padding: 14px 18px;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-size: 13px;
             overflow-x: auto;
-            margin: 15px 0;
+            margin: 14px 0;
         }
 
+        /* ── Step List ── */
         .step-list {
             counter-reset: step-counter;
             list-style: none;
@@ -220,103 +281,114 @@
         .step-list li {
             counter-increment: step-counter;
             position: relative;
-            padding-left: 40px;
+            padding-left: 44px;
             margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .step-list li::before {
             content: counter(step-counter);
             position: absolute;
-            left: 0;
-            top: 0;
-            background: #667eea;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
+            left: 0; top: 0;
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            width: 28px; height: 28px;
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
         }
 
+        .step-list li strong { color: var(--text-primary); }
+
+        /* ── Workflow Box ── */
         .workflow-box {
-            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border: 2px solid #e2e8f0;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 18px;
+            margin: 18px 0;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
 
         .workflow-step {
-            padding: 15px;
-            background: white;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            border-left: 3px solid #667eea;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-left: 3px solid var(--accent-primary);
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
         }
 
-        .workflow-step:last-child {
-            margin-bottom: 0;
-        }
+        .workflow-step:last-child { margin-bottom: 0; }
+        .workflow-step strong { color: var(--text-primary); }
 
+        /* ── Tables ── */
         .comparison-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 18px 0;
         }
 
         .comparison-table th {
-            background: #667eea;
-            color: white;
-            padding: 12px;
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            padding: 12px 14px;
             text-align: left;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 13px;
         }
 
         .comparison-table td {
-            padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 13px;
         }
 
-        .comparison-table tr:hover {
-            background: #f7fafc;
-        }
+        .comparison-table td strong { color: var(--text-primary); }
+        .comparison-table tr:hover td { background: var(--bg-primary); }
 
+        /* ── Badges ── */
         .badge {
             display: inline-block;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            margin: 0 5px;
+            padding: 3px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            margin: 0 3px;
+            clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
         }
 
-        .badge-admin {
-            background: #667eea;
-            color: white;
-        }
+        .badge-admin { background: var(--accent-primary); color: var(--bg-primary); }
+        .badge-user  { background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); }
 
-        .badge-user {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
+        .hidden { display: none !important; }
 
-        .hidden {
-            display: none;
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; gap: 16px; padding: 20px; }
+            .header-nav { flex-wrap: wrap; }
+            .container { padding: 20px; }
+            .guide-links { grid-template-columns: 1fr 1fr; }
+            .feature-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-content">
-            <h1>📖 User Guide</h1>
-            <div class="header-buttons">
-                <a href="/admin.html" class="btn-header">📦 Dashboard</a>
-                <a href="/reports.html" class="btn-header">📊 Reports</a>
-                <a href="/users.html" class="btn-header" id="users-link">👥 Users</a>
-                <button class="btn-header" onclick="logout()">Logout</button>
+            <div class="header-left">
+                <div class="logo">SC</div>
+                <h1>User Guide</h1>
+            </div>
+            <div class="header-nav">
+                <a href="/admin.html" class="nav-btn">📦 Dashboard</a>
+                <a href="/reports.html" class="nav-btn">📊 Reports</a>
+                <a href="/users.html" class="nav-btn" id="users-link">👥 Users</a>
+                <button class="nav-btn" onclick="logout()">Logout</button>
             </div>
         </div>
     </div>
@@ -338,7 +410,7 @@
         <!-- Getting Started -->
         <div class="section" id="getting-started">
             <h2>🚀 Getting Started</h2>
-            
+
             <h3>Welcome to Stock Control!</h3>
             <p>This system helps you manage inventory, track stock levels, generate QR codes, and create reorder lists automatically.</p>
 
@@ -376,6 +448,10 @@
             <p>Admins can add new inventory items:</p>
             <ol class="step-list">
                 <li>
+                    <strong>Click "+ Add Item"</strong><br>
+                    The add item form opens as a modal.
+                </li>
+                <li>
                     <strong>Fill in Item Details</strong><br>
                     Enter SKU, Name, Initial Stock, Location, and Description.
                 </li>
@@ -385,35 +461,37 @@
                 </li>
                 <li>
                     <strong>Click "Add Item"</strong><br>
-                    Item appears in your inventory list.
+                    Item appears in your inventory grid.
                 </li>
             </ol>
 
             <h3>Managing Items</h3>
             <p>Each item card shows:</p>
             <ul>
-                <li><strong>Name & SKU</strong> - Item identification</li>
-                <li><strong>Stock Level</strong> - Current quantity (color-coded)</li>
-                <li><strong>Cost</strong> - Unit cost if entered</li>
-                <li><strong>Location</strong> - Where item is stored</li>
+                <li><strong>Name & SKU</strong> — Item identification</li>
+                <li><strong>Stock Badge</strong> — Current quantity (green/amber/red)</li>
+                <li><strong>Cost & Location</strong> — If entered</li>
             </ul>
 
             <h4>Available Actions:</h4>
             <div class="workflow-box">
                 <div class="workflow-step">
-                    <strong>📱 View QR</strong> - Display and print QR code for scanning
+                    <strong>📱 QR Code</strong> — Display and print QR code for scanning
                 </div>
                 <div class="workflow-step">
-                    <strong>➕ Replenish</strong> - <span class="badge badge-admin">Admin Only</span> Add stock when receiving deliveries
+                    <strong>➕ Replenish</strong> — <span class="badge badge-admin">Admin Only</span> Add stock when receiving deliveries
                 </div>
                 <div class="workflow-step">
-                    <strong>🗑️ Delete</strong> - <span class="badge badge-admin">Admin Only</span> Remove item from inventory
+                    <strong>🗑️ Delete</strong> — <span class="badge badge-admin">Admin Only</span> Remove item from inventory
                 </div>
             </div>
 
+            <h3>Search & Filter</h3>
+            <p>Use the search box in the action bar to filter items by name, SKU, or location in real time.</p>
+
             <h3>Bulk Import/Export</h3>
             <p><span class="badge badge-admin">Admin Only</span></p>
-            
+
             <h4>Export CSV:</h4>
             <ul>
                 <li>Click "📥 Export CSV" button</li>
@@ -440,10 +518,10 @@
             <h3>Overview Statistics</h3>
             <p>The reports page shows four key metrics:</p>
             <ul>
-                <li><strong>Total Inventory Value</strong> - Sum of all stock × unit costs</li>
-                <li><strong>Total Items</strong> - Number of different products</li>
-                <li><strong>Low Stock Items</strong> - Items with ≤5 units <em>(clickable!)</em></li>
-                <li><strong>Out of Stock</strong> - Items with 0 units <em>(clickable!)</em></li>
+                <li><strong>Total Inventory Value</strong> — Sum of all stock × unit costs</li>
+                <li><strong>Total Items</strong> — Number of different products</li>
+                <li><strong>Low Stock Items</strong> — Items with ≤5 units <em>(clickable!)</em></li>
+                <li><strong>Out of Stock</strong> — Items with 0 units <em>(clickable!)</em></li>
             </ul>
 
             <h3>Reorder Workflow (The Best Feature! 🎯)</h3>
@@ -466,17 +544,17 @@
                 </li>
                 <li>
                     <strong>Email to Supplier</strong><br>
-                    Send the CSV file - it's ready to use!
+                    Send the CSV file — it's ready to use!
                 </li>
             </ol>
 
             <div class="success-box">
-                <strong>⚡ Time Savings:</strong> This process takes 30 seconds instead of 20-30 minutes of manual work!
+                <strong>⚡ Time Savings:</strong> This process takes 30 seconds instead of 20–30 minutes of manual work!
             </div>
 
             <h3>Export Formats</h3>
-            <p>Three specialized formats available:</p>
-            
+            <p>Three specialised formats available:</p>
+
             <table class="comparison-table">
                 <thead>
                     <tr>
@@ -493,7 +571,7 @@
                     </tr>
                     <tr>
                         <td><strong>Full Report</strong></td>
-                        <td>Analysis & reports</td>
+                        <td>Analysis &amp; reports</td>
                         <td>All item details including location, description, values</td>
                     </tr>
                     <tr>
@@ -504,11 +582,11 @@
                 </tbody>
             </table>
 
-            <h3>Location & Value Analysis</h3>
+            <h3>Location &amp; Value Analysis</h3>
             <ul>
-                <li><strong>Click location rows</strong> - See all items in that location</li>
-                <li><strong>Top Value Items</strong> - See your most valuable inventory</li>
-                <li><strong>Quick Actions</strong> - Fast filters for common views</li>
+                <li><strong>Click location rows</strong> — See all items in that location</li>
+                <li><strong>Top Value Items</strong> — See your most valuable inventory</li>
+                <li><strong>Quick Actions</strong> — Fast filters for common views</li>
             </ul>
         </div>
 
@@ -522,7 +600,7 @@
             <h3>Generating QR Codes</h3>
             <ol class="step-list">
                 <li>
-                    <strong>Click "📱 View QR" on Any Item</strong><br>
+                    <strong>Click "📱 QR Code" on Any Item</strong><br>
                     QR code appears in a popup window
                 </li>
                 <li>
@@ -556,28 +634,28 @@
             </ol>
 
             <div class="info-box">
-                <strong>📱 Mobile Friendly:</strong> The scan page is optimized for phones - large buttons, easy number input, and instant feedback.
+                <strong>📱 Mobile Friendly:</strong> The scan page is optimised for phones — large buttons, easy number input, and instant feedback.
             </div>
 
             <h3>Use Cases for QR Codes</h3>
             <ul>
-                <li><strong>Warehouse Picking</strong> - Scan when taking items from stock</li>
-                <li><strong>Tool Checkout</strong> - Track who's using equipment</li>
-                <li><strong>Supply Room</strong> - Easy depletion for office supplies</li>
-                <li><strong>Retail Stock</strong> - Update inventory as items are sold</li>
+                <li><strong>Warehouse Picking</strong> — Scan when taking items from stock</li>
+                <li><strong>Tool Checkout</strong> — Track who's using equipment</li>
+                <li><strong>Supply Room</strong> — Easy depletion for office supplies</li>
+                <li><strong>Retail Stock</strong> — Update inventory as items are sold</li>
             </ul>
         </div>
 
         <!-- User Management -->
         <div class="section" id="users">
             <h2>👥 User Management</h2>
-            
+
             <div class="info-box">
                 <strong>🔐 Admin Feature:</strong> Only administrators can access user management.
             </div>
 
             <h3>User Roles</h3>
-            
+
             <table class="comparison-table">
                 <thead>
                     <tr>
@@ -587,41 +665,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>View Inventory</td>
-                        <td>✓</td>
-                        <td>✓</td>
-                    </tr>
-                    <tr>
-                        <td>View Reports & Costs</td>
-                        <td>✓</td>
-                        <td>✓</td>
-                    </tr>
-                    <tr>
-                        <td>Scan QR Codes</td>
-                        <td>✓</td>
-                        <td>✓</td>
-                    </tr>
-                    <tr>
-                        <td>Export Data</td>
-                        <td>✓</td>
-                        <td>✓</td>
-                    </tr>
-                    <tr>
-                        <td>Add/Edit/Delete Items</td>
-                        <td>✓</td>
-                        <td>✗</td>
-                    </tr>
-                    <tr>
-                        <td>Import CSV</td>
-                        <td>✓</td>
-                        <td>✗</td>
-                    </tr>
-                    <tr>
-                        <td>Create Users</td>
-                        <td>✓</td>
-                        <td>✗</td>
-                    </tr>
+                    <tr><td>View Inventory</td><td>✓</td><td>✓</td></tr>
+                    <tr><td>View Reports &amp; Costs</td><td>✓</td><td>✓</td></tr>
+                    <tr><td>Scan QR Codes</td><td>✓</td><td>✓</td></tr>
+                    <tr><td>Export Data</td><td>✓</td><td>✓</td></tr>
+                    <tr><td>Add/Edit/Delete Items</td><td>✓</td><td>✗</td></tr>
+                    <tr><td>Import CSV</td><td>✓</td><td>✗</td></tr>
+                    <tr><td>Create Users</td><td>✓</td><td>✗</td></tr>
                 </tbody>
             </table>
 
@@ -633,7 +683,7 @@
                 </li>
                 <li>
                     <strong>Fill in User Details</strong><br>
-                    Username, password (min 6 characters), and role
+                    Username, password (min 10 characters, one uppercase, one number), and role
                 </li>
                 <li>
                     <strong>Select Role</strong><br>
@@ -650,7 +700,7 @@
             </ol>
 
             <h3>First User is Admin</h3>
-            <p>The very first person to register becomes an administrator automatically. After that, only admins can create new users - public registration is disabled for security.</p>
+            <p>The very first person to register becomes an administrator automatically. After that, only admins can create new users — public registration creates general user accounts.</p>
 
             <div class="warning-box">
                 <strong>⚠️ Cannot Delete Yourself:</strong> For safety, you cannot delete your own admin account. Create another admin first if you need to remove yourself.
@@ -663,145 +713,81 @@
 
             <h3>Weekly Reorder Process</h3>
             <div class="workflow-box">
-                <div class="workflow-step">
-                    <strong>Monday Morning:</strong> Open Reports page
-                </div>
-                <div class="workflow-step">
-                    <strong>Click:</strong> "Low Stock: 12" card
-                </div>
-                <div class="workflow-step">
-                    <strong>Review:</strong> 12 items needing reorder
-                </div>
-                <div class="workflow-step">
-                    <strong>Adjust:</strong> Quantities if needed
-                </div>
-                <div class="workflow-step">
-                    <strong>Uncheck:</strong> Items for different suppliers
-                </div>
-                <div class="workflow-step">
-                    <strong>Export:</strong> Click "Export Selected"
-                </div>
-                <div class="workflow-step">
-                    <strong>Email:</strong> CSV to supplier
-                </div>
-                <div class="workflow-step">
-                    <strong>Done:</strong> 2 minutes total!
-                </div>
+                <div class="workflow-step"><strong>Monday Morning:</strong> Open Reports page</div>
+                <div class="workflow-step"><strong>Click:</strong> "Low Stock: 12" card</div>
+                <div class="workflow-step"><strong>Review:</strong> 12 items needing reorder</div>
+                <div class="workflow-step"><strong>Adjust:</strong> Quantities if needed</div>
+                <div class="workflow-step"><strong>Uncheck:</strong> Items for different suppliers</div>
+                <div class="workflow-step"><strong>Export:</strong> Click "Export Selected"</div>
+                <div class="workflow-step"><strong>Email:</strong> CSV to supplier</div>
+                <div class="workflow-step"><strong>Done:</strong> 2 minutes total!</div>
             </div>
 
             <h3>Receiving Stock Delivery</h3>
             <ol class="step-list">
-                <li>
-                    <strong>Receive Delivery</strong><br>
-                    Physical items arrive at warehouse
-                </li>
-                <li>
-                    <strong>Open Dashboard</strong><br>
-                    Go to admin.html
-                </li>
-                <li>
-                    <strong>Find Item</strong><br>
-                    Locate item in inventory list
-                </li>
-                <li>
-                    <strong>Click "➕ Replenish"</strong><br>
-                    Admin only feature
-                </li>
-                <li>
-                    <strong>Enter Quantity</strong><br>
-                    How many units received
-                </li>
-                <li>
-                    <strong>Confirm</strong><br>
-                    Stock updated instantly
-                </li>
+                <li><strong>Receive Delivery</strong><br>Physical items arrive at warehouse</li>
+                <li><strong>Open Dashboard</strong><br>Go to admin.html</li>
+                <li><strong>Find Item</strong><br>Locate item in inventory grid (use search)</li>
+                <li><strong>Click "➕ Replenish"</strong><br>Admin only feature</li>
+                <li><strong>Enter Quantity</strong><br>How many units received</li>
+                <li><strong>Confirm</strong><br>Stock updated instantly</li>
             </ol>
 
             <h3>Month-End Stocktake</h3>
             <ol class="step-list">
-                <li>
-                    <strong>Export Stock Count Sheets</strong><br>
-                    Reports → Export → Stock Count Sheet (by location)
-                </li>
-                <li>
-                    <strong>Print Sheets</strong><br>
-                    One per location or section
-                </li>
-                <li>
-                    <strong>Physical Count</strong><br>
-                    Staff count actual items
-                </li>
-                <li>
-                    <strong>Compare</strong><br>
-                    Expected vs Actual stock
-                </li>
-                <li>
-                    <strong>Update System</strong><br>
-                    Adjust quantities for discrepancies
-                </li>
-                <li>
-                    <strong>Investigate</strong><br>
-                    Look into large differences (shrinkage/errors)
-                </li>
+                <li><strong>Export Stock Count Sheets</strong><br>Reports → Export → Stock Count Sheet (by location)</li>
+                <li><strong>Print Sheets</strong><br>One per location or section</li>
+                <li><strong>Physical Count</strong><br>Staff count actual items</li>
+                <li><strong>Compare</strong><br>Expected vs Actual stock</li>
+                <li><strong>Update System</strong><br>Adjust quantities for discrepancies</li>
+                <li><strong>Investigate</strong><br>Look into large differences (shrinkage/errors)</li>
             </ol>
 
             <h3>Daily Operations</h3>
             <div class="workflow-box">
-                <div class="workflow-step">
-                    <strong>Staff Arrive:</strong> Login to scan page
-                </div>
-                <div class="workflow-step">
-                    <strong>Take Items:</strong> Scan QR code
-                </div>
-                <div class="workflow-step">
-                    <strong>Enter Quantity:</strong> How many taking
-                </div>
-                <div class="workflow-step">
-                    <strong>Confirm:</strong> Stock depletes automatically
-                </div>
-                <div class="workflow-step">
-                    <strong>Manager Checks:</strong> Reports for low stock alerts
-                </div>
-                <div class="workflow-step">
-                    <strong>Weekly:</strong> Review and reorder
-                </div>
+                <div class="workflow-step"><strong>Staff Arrive:</strong> Log in to scan page</div>
+                <div class="workflow-step"><strong>Take Items:</strong> Scan QR code</div>
+                <div class="workflow-step"><strong>Enter Quantity:</strong> How many taking</div>
+                <div class="workflow-step"><strong>Confirm:</strong> Stock depletes automatically</div>
+                <div class="workflow-step"><strong>Manager Checks:</strong> Reports for low stock alerts</div>
+                <div class="workflow-step"><strong>Weekly:</strong> Review and reorder</div>
             </div>
         </div>
 
         <!-- Tips & Tricks -->
         <div class="section">
-            <h2>💡 Tips & Tricks</h2>
+            <h2>💡 Tips &amp; Tricks</h2>
 
             <h3>Best Practices</h3>
             <ul>
-                <li><strong>Use Clear SKUs</strong> - Format like "WIDGET-001" or "TOOL-HAMMER-01"</li>
-                <li><strong>Add Locations</strong> - Makes finding items easier (e.g., "Warehouse A, Shelf 3")</li>
-                <li><strong>Enter Costs</strong> - Enables value reporting and better insights</li>
-                <li><strong>Print QR Codes Clearly</strong> - Laminate for durability in warehouses</li>
-                <li><strong>Regular Backups</strong> - Export CSV weekly as backup</li>
-                <li><strong>Stock Checks</strong> - Monthly physical counts recommended</li>
+                <li><strong>Use Clear SKUs</strong> — Format like "WIDGET-001" or "TOOL-HAMMER-01"</li>
+                <li><strong>Add Locations</strong> — Makes finding items easier (e.g., "Warehouse A, Shelf 3")</li>
+                <li><strong>Enter Costs</strong> — Enables value reporting and better insights</li>
+                <li><strong>Print QR Codes Clearly</strong> — Laminate for durability in warehouses</li>
+                <li><strong>Regular Backups</strong> — Export CSV weekly as backup</li>
+                <li><strong>Stock Checks</strong> — Monthly physical counts recommended</li>
             </ul>
 
             <h3>Keyboard Shortcuts</h3>
             <ul>
-                <li><strong>Ctrl+P</strong> - Print QR code (when viewing QR)</li>
-                <li><strong>Ctrl+F5</strong> - Refresh and clear cache</li>
-                <li><strong>Tab</strong> - Navigate between form fields quickly</li>
+                <li><strong>Ctrl+P</strong> — Print QR code (when viewing QR)</li>
+                <li><strong>Ctrl+F5</strong> — Refresh and clear cache</li>
+                <li><strong>Tab</strong> — Navigate between form fields quickly</li>
             </ul>
 
             <h3>Mobile Tips</h3>
             <ul>
-                <li><strong>Bookmark Scan Page</strong> - Quick access on warehouse phones</li>
-                <li><strong>Use Native Camera</strong> - No QR scanner app needed (iOS/Android)</li>
-                <li><strong>Large Touch Targets</strong> - Scan page optimized for gloves</li>
+                <li><strong>Bookmark Scan Page</strong> — Quick access on warehouse phones</li>
+                <li><strong>Use Native Camera</strong> — No QR scanner app needed (iOS/Android)</li>
+                <li><strong>Large Touch Targets</strong> — Scan page optimised for gloves</li>
             </ul>
 
             <h3>Reporting Tips</h3>
             <ul>
-                <li><strong>Click Don't Scroll</strong> - Use clickable cards to filter quickly</li>
-                <li><strong>Export Templates</strong> - Use Stock Count Sheet for physical audits</li>
-                <li><strong>Location Views</strong> - Click locations to see specific warehouse/room</li>
-                <li><strong>Reorder Worksheet</strong> - Pre-checked items, just adjust and export!</li>
+                <li><strong>Click Don't Scroll</strong> — Use clickable cards to filter quickly</li>
+                <li><strong>Export Templates</strong> — Use Stock Count Sheet for physical audits</li>
+                <li><strong>Location Views</strong> — Click locations to see specific warehouse/room</li>
+                <li><strong>Reorder Worksheet</strong> — Pre-checked items, just adjust and export!</li>
             </ul>
         </div>
 
@@ -810,14 +796,14 @@
             <h2>🆘 Getting Help</h2>
 
             <h3>Common Questions</h3>
-            
+
             <h4>Q: I forgot my password, how do I reset it?</h4>
             <p>Contact an administrator to create a new password or create a new account for you.</p>
 
             <h4>Q: Can I edit an existing item?</h4>
             <p>Currently, use CSV export → edit in Excel → import to update items. UI edit button coming soon!</p>
 
-            <h4>Q: Why can't I see the "Add Item" form?</h4>
+            <h4>Q: Why can't I see the "Add Item" button?</h4>
             <p>You need administrator privileges. Contact your admin for access.</p>
 
             <h4>Q: The QR code won't scan</h4>
@@ -836,19 +822,15 @@
     </div>
 
     <script>
-        // Check if user is logged in
         const authToken = localStorage.getItem('authToken');
         const userRole = localStorage.getItem('userRole');
 
-        // Show/hide users link based on role
+        // Hide Users link for non-admins
         if (userRole !== 'admin') {
             const usersLink = document.getElementById('users-link');
-            if (usersLink) {
-                usersLink.style.display = 'none';
-            }
+            if (usersLink) usersLink.style.display = 'none';
         }
 
-        // Logout function
         function logout() {
             localStorage.removeItem('authToken');
             localStorage.removeItem('username');
@@ -858,14 +840,11 @@
 
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });

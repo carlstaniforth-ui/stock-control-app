@@ -5,23 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Management - Stock Control</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3a3a3a;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ffa94d;
+            --text-primary: #e8e8e8;
+            --text-secondary: #b0b0b0;
+            --border-color: #4a4a4a;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f7fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             min-height: 100vh;
+            color: var(--text-primary);
         }
 
+        /* ── Header ── */
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            border-bottom: 2px solid var(--accent-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
         }
 
         .header-content {
@@ -30,228 +56,230 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 24px 32px;
         }
 
-        .header h1 {
-            font-size: 24px;
+        .header-left { display: flex; align-items: center; gap: 16px; }
+
+        .logo {
+            width: 44px; height: 44px;
+            background: var(--accent-primary);
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 18px; color: var(--bg-primary);
         }
 
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
+        .header h1 { font-size: 24px; font-weight: 700; color: var(--text-primary); }
 
-        .btn-header {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
+        .header-nav { display: flex; gap: 8px; }
+
+        .nav-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 9px 18px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
             text-decoration: none;
             display: inline-block;
+            font-family: inherit;
         }
 
-        .btn-header:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .nav-btn:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
         }
 
+        /* ── Container ── */
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 30px 20px;
+            padding: 32px;
         }
 
+        /* ── Info box ── */
+        .info-box {
+            background: rgba(90, 125, 154, 0.15);
+            border-left: 3px solid #5a7d9a;
+            color: #90caf9;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+        }
+
+        /* ── Sections ── */
         .section {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 28px;
+            margin-bottom: 24px;
+            clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
         }
 
         .section h2 {
-            color: #2d3748;
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 700;
             margin-bottom: 20px;
-            font-size: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent-primary);
         }
 
+        /* ── Forms ── */
         .form-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            gap: 16px;
             margin-bottom: 20px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+        .form-group { margin-bottom: 16px; }
 
         label {
             display: block;
-            margin-bottom: 5px;
-            color: #4a5568;
-            font-weight: 500;
-            font-size: 14px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 8px;
         }
 
         input, select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 11px 14px;
             font-size: 14px;
+            font-family: inherit;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
         }
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+        input:focus, select:focus { outline: none; border-color: var(--accent-primary); }
+        input::placeholder { color: var(--text-secondary); }
 
+        /* ── Buttons ── */
         .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 11px 22px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.2s;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            font-family: inherit;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-        }
+        .btn:hover { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--bg-primary); transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-        .btn:disabled {
-            background: #cbd5e0;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-small { padding: 7px 14px; font-size: 12px; }
 
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 13px;
-        }
+        .btn-danger { border-color: var(--danger); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); border-color: var(--danger); color: white; }
 
-        .btn-danger {
-            background: #f56565;
-        }
-
+        /* ── Alerts ── */
         .alert {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
             font-size: 14px;
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
         }
 
-        .alert-error {
-            background: #fed7d7;
-            color: #c53030;
-            border: 1px solid #fc8181;
-        }
+        .alert-error   { background: rgba(244, 67, 54, 0.15); color: #ff6b6b; border-left: 3px solid var(--danger); }
+        .alert-success { background: rgba(76, 175, 80, 0.15); color: #69db7c; border-left: 3px solid var(--success); }
 
-        .alert-success {
-            background: #c6f6d5;
-            color: #22543d;
-            border: 1px solid #68d391;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        /* ── Table ── */
+        table { width: 100%; border-collapse: collapse; }
 
         th {
-            background: #f7fafc;
-            padding: 12px;
+            background: var(--bg-primary);
+            padding: 12px 14px;
             text-align: left;
-            font-weight: 600;
-            color: #4a5568;
-            border-bottom: 2px solid #e2e8f0;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
         }
 
         td {
-            padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
-            color: #2d3748;
-        }
-
-        tr:hover {
-            background: #f7fafc;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .badge-admin {
-            background: #667eea;
-            color: white;
-        }
-
-        .badge-user {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .info-box {
-            background: #e6f7ff;
-            border: 1px solid #91d5ff;
-            color: #096dd9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
             font-size: 14px;
         }
 
-        .hidden {
-            display: none;
+        tr:hover td { background: var(--bg-primary); }
+
+        /* ── Badges ── */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+        }
+
+        .badge-admin { background: var(--accent-primary); color: var(--bg-primary); }
+        .badge-user  { background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); }
+
+        /* ── Spinner ── */
+        .loading { text-align: center; padding: 48px; }
+
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            width: 48px; height: 48px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading p { color: var(--text-secondary); font-size: 14px; }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; gap: 16px; padding: 20px; }
+            .header-nav { flex-wrap: wrap; }
+            .container { padding: 20px; }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-content">
-            <h1>👥 User Management</h1>
-            <div class="header-buttons">
-                <a href="/admin.html" class="btn-header">📦 Dashboard</a>
-                <a href="/reports.html" class="btn-header">📊 Reports</a>
-                <a href="/guide.html" class="btn-header">📖 Guide</a>
-                <button class="btn-header" onclick="logout()">Logout</button>
+            <div class="header-left">
+                <div class="logo">SC</div>
+                <h1>User Management</h1>
+            </div>
+            <div class="header-nav">
+                <a href="/admin.html" class="nav-btn">📦 Dashboard</a>
+                <a href="/reports.html" class="nav-btn">📊 Reports</a>
+                <a href="/guide.html" class="nav-btn">📖 Guide</a>
+                <button class="nav-btn" onclick="logout()">Logout</button>
             </div>
         </div>
     </div>
 
     <div class="container">
         <div class="info-box">
-            <strong>ℹ️ Administrator Privileges</strong><br>
+            <strong>Administrator Privileges</strong><br>
             As an administrator, you can create new users and assign roles. You can create other administrators or general users.
         </div>
 
@@ -359,7 +387,7 @@
             const container = document.getElementById('users-container');
 
             if (users.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #718096; padding: 40px;">No users found.</p>';
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No users found.</p>';
                 return;
             }
 
@@ -383,13 +411,13 @@
 
                             return `
                                 <tr>
-                                    <td><strong>${escapeHtml(user.username)}</strong>${isCurrentUser ? ' <em>(You)</em>' : ''}</td>
+                                    <td><strong>${escapeHtml(user.username)}</strong>${isCurrentUser ? ' <em style="color:var(--text-secondary)">(You)</em>' : ''}</td>
                                     <td><span class="badge ${badgeClass}">${roleLabel}</span></td>
                                     <td>${createdDate}</td>
                                     <td>${escapeHtml(user.createdBy || 'N/A')}</td>
                                     <td>
                                         ${isCurrentUser ?
-                                            '<span style="color: #718096; font-size: 13px;">Cannot delete yourself</span>' :
+                                            '<span style="color: var(--text-secondary); font-size: 13px;">Cannot delete yourself</span>' :
                                             `<button class="btn btn-small btn-danger delete-user-btn" data-user-id="${user.id}">Delete</button>`
                                         }
                                     </td>
@@ -451,9 +479,7 @@
             try {
                 const response = await fetch(`${API_BASE}/users/${userId}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
+                    headers: { 'Authorization': `Bearer ${authToken}` }
                 });
 
                 if (!response.ok) {
@@ -495,9 +521,7 @@
 
         // Initialize
         checkAuth().then(isAuthorized => {
-            if (isAuthorized) {
-                loadUsers();
-            }
+            if (isAuthorized) loadUsers();
         });
     </script>
 </body>
