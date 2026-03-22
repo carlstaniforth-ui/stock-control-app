@@ -23,9 +23,10 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],  // inline scripts used in HTML pages
-      styleSrc: ["'self'", "'unsafe-inline'"],   // inline styles used in HTML pages
-      imgSrc: ["'self'", "data:"],               // data: needed for QR code images
+      scriptSrc: ["'self'", "'unsafe-inline'"],     // inline scripts used in HTML pages
+      scriptSrcAttr: ["'unsafe-inline'"],            // inline event handlers (onclick, onsubmit etc.)
+      styleSrc: ["'self'", "'unsafe-inline'"],       // inline styles used in HTML pages
+      imgSrc: ["'self'", "data:"],                   // data: needed for QR code images
       connectSrc: ["'self'"]
     }
   }
